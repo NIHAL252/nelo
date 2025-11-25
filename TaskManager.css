@@ -202,6 +202,13 @@ body {
   color: var(--color-primary);
 }
 
+.debounce-info {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+  margin-left: 0.5rem;
+}
+
 /* Filter Bar */
 
 .filter-bar {

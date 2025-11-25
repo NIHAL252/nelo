@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './TaskManager.css';
 import TaskForm from './components/TaskForm';
 import TaskList from './components/TaskList';
@@ -7,6 +7,7 @@ import DeleteConfirmation from './components/DeleteConfirmation';
 import FilterBar from './components/FilterBar';
 import SearchBox from './components/SearchBox';
 import { useAuth } from './context/AuthContext';
+import { useSearch, usePerformance } from './hooks';
 
 const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
@@ -14,14 +15,26 @@ const Dashboard = () => {
   const [deletingTaskId, setDeletingTaskId] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [filter, setFilter] = useState('all');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
-  const debounceTimerRef = React.useRef(null);
   const { user, logout } = useAuth();
 
+  // Use custom search hook with debouncing and filtering
+  const {
+    searchTerm,
+    setSearchTerm,
+    filter,
+    setFilter,
+    filteredTasks,
+    taskCounts,
+  } = useSearch(tasks, 300); // 300ms debounce
+
+  // Performance monitoring (development only)
+  usePerformance('Dashboard', {
+    tasksCount: tasks.length,
+    filteredCount: filteredTasks.length,
+  });
+
   // Load tasks from localStorage on mount
-  React.useEffect(() => {
+  useEffect(() => {
     const savedTasks = localStorage.getItem('tasks');
     if (savedTasks) {
       try {
@@ -33,22 +46,9 @@ const Dashboard = () => {
   }, []);
 
   // Save tasks to localStorage whenever they change
-  React.useEffect(() => {
+  useEffect(() => {
     localStorage.setItem('tasks', JSON.stringify(tasks));
   }, [tasks]);
-
-  // Debounced search
-  React.useEffect(() => {
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
-
-    debounceTimerRef.current = setTimeout(() => {
-      setDebouncedSearchTerm(searchTerm.toLowerCase());
-    }, 300);
-
-    return () => clearTimeout(debounceTimerRef.current);
-  }, [searchTerm]);
 
   // Create Task
   const handleAddTask = (formData) => {
@@ -119,32 +119,6 @@ const Dashboard = () => {
     setShowDeleteConfirm(false);
   };
 
-  // Filter and search logic
-  const getFilteredTasks = React.useCallback(() => {
-    let filtered = tasks;
-
-    // Apply search filter
-    if (debouncedSearchTerm) {
-      filtered = filtered.filter((task) => {
-        const searchableText = `${task.title} ${task.description}`.toLowerCase();
-        return searchableText.includes(debouncedSearchTerm);
-      });
-    }
-
-    // Apply status and priority filters
-    if (filter === 'completed') {
-      filtered = filtered.filter((task) => task.completed);
-    } else if (filter === 'pending') {
-      filtered = filtered.filter((task) => !task.completed);
-    } else if (['high', 'medium', 'low'].includes(filter)) {
-      filtered = filtered.filter((task) => task.priority === filter);
-    }
-
-    return filtered;
-  }, [tasks, debouncedSearchTerm, filter]);
-
-  const filteredTasks = getFilteredTasks();
-
   return (
     <div className="task-manager-container">
       <div className="task-manager-header">
@@ -171,14 +145,7 @@ const Dashboard = () => {
           <FilterBar 
             activeFilter={filter}
             onFilterChange={setFilter}
-            tasksCount={{
-              all: tasks.length,
-              completed: tasks.filter(t => t.completed).length,
-              pending: tasks.filter(t => !t.completed).length,
-              high: tasks.filter(t => t.priority === 'high').length,
-              medium: tasks.filter(t => t.priority === 'medium').length,
-              low: tasks.filter(t => t.priority === 'low').length,
-            }}
+            tasksCount={taskCounts}
           />
         </div>
 
