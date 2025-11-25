@@ -6,8 +6,9 @@ import EditModal from './components/EditModal';
 import DeleteConfirmation from './components/DeleteConfirmation';
 import FilterBar from './components/FilterBar';
 import SearchBox from './components/SearchBox';
+import AdvancedSearchBox from './components/AdvancedSearchBox';
 import { useAuth } from './context/AuthContext';
-import { useSearch, usePerformance } from './hooks';
+import { useSearch, usePerformance, useElasticSearch } from './hooks';
 
 const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
@@ -15,6 +16,8 @@ const Dashboard = () => {
   const [deletingTaskId, setDeletingTaskId] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [useAdvancedSearch, setUseAdvancedSearch] = useState(false);
+  const [elasticResults, setElasticResults] = useState(null);
   const { user, logout } = useAuth();
 
   // Use custom search hook with debouncing and filtering
@@ -23,14 +26,21 @@ const Dashboard = () => {
     setSearchTerm,
     filter,
     setFilter,
-    filteredTasks,
+    filteredTasks: basicFilteredTasks,
     taskCounts,
   } = useSearch(tasks, 300); // 300ms debounce
+
+  // Use Elasticsearch-style search when enabled
+  const elasticSearchTerm = useAdvancedSearch ? null : searchTerm;
+  
+  // Determine which filtered tasks to use
+  const filteredTasks = useAdvancedSearch && elasticResults ? elasticResults.results : basicFilteredTasks;
 
   // Performance monitoring (development only)
   usePerformance('Dashboard', {
     tasksCount: tasks.length,
     filteredCount: filteredTasks.length,
+    useAdvancedSearch,
   });
 
   // Load tasks from localStorage on mount
@@ -138,10 +148,29 @@ const Dashboard = () => {
         <TaskForm onAddTask={handleAddTask} />
         
         <div className="filters-and-search">
-          <SearchBox 
-            searchTerm={searchTerm} 
-            onSearchChange={setSearchTerm}
-          />
+          {useAdvancedSearch ? (
+            <AdvancedSearchBox 
+              tasks={tasks}
+              onResultsChange={setElasticResults}
+              debounceDelay={300}
+              matchType="substring"
+            />
+          ) : (
+            <SearchBox 
+              searchTerm={searchTerm} 
+              onSearchChange={setSearchTerm}
+            />
+          )}
+          <div className="search-mode-toggle">
+            <label>
+              <input
+                type="checkbox"
+                checked={useAdvancedSearch}
+                onChange={(e) => setUseAdvancedSearch(e.target.checked)}
+              />
+              <span>Advanced Search</span>
+            </label>
+          </div>
           <FilterBar 
             activeFilter={filter}
             onFilterChange={setFilter}
