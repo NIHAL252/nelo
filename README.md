@@ -86,6 +86,21 @@ A complete **React.js** task management application with full CRUD operations (C
 - **Session info button** for viewing session details
 - **Auto-logout on expiry** with optional warning
 
+### ✉️ **Task Mail Automation (Simulated Cron)**
+- **Automatic task monitoring** every 20 minutes
+- **Mock email notifications** for:
+  - ⚠️ Overdue tasks (past due date)
+  - 📌 Due soon tasks (within 24 hours)
+  - 🔴 High priority reminders (pending high-priority items)
+  - 📊 Daily summaries (overall task stats)
+- **Email notifications panel** in dashboard
+- **Manual trigger** button for testing
+- **Email logging** to localStorage (last 100 emails)
+- **Real-time status display** (Active/Inactive, last check time, email count)
+- **Development mode:** 2-minute interval for easier testing
+- **Production mode:** 20-minute interval for real usage
+- **Email details viewer** - Expand to see full email and task details
+
 ## 🛠️ Installation & Setup
 
 ### Prerequisites

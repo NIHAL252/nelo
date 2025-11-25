@@ -8,8 +8,9 @@ import FilterBar from './components/FilterBar';
 import SearchBox from './components/SearchBox';
 import AdvancedSearchBox from './components/AdvancedSearchBox';
 import SessionInfo from './components/SessionInfo';
+import EmailNotifications from './components/EmailNotifications';
 import { useAuth } from './context/AuthContext';
-import { useSearch, usePerformance, useElasticSearch } from './hooks';
+import { useSearch, usePerformance, useElasticSearch, useTaskMailAutomation } from './hooks';
 
 const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
@@ -44,6 +45,15 @@ const Dashboard = () => {
     filteredCount: filteredTasks.length,
     useAdvancedSearch,
   });
+
+  // Use task mail automation hook
+  const { automationStatus, triggerManual: triggerMailCheck } = useTaskMailAutomation(
+    tasks,
+    (email) => {
+      console.log('New email notification received:', email);
+    },
+    true // enable automation
+  );
 
   // Load tasks from localStorage on mount
   useEffect(() => {
@@ -157,6 +167,8 @@ const Dashboard = () => {
       </div>
 
       <div className="task-manager-content">
+        <EmailNotifications />
+        
         <TaskForm onAddTask={handleAddTask} />
         
         <div className="filters-and-search">
