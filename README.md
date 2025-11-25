@@ -1,8 +1,18 @@
-# Task Manager - CRUD App
+# Task Manager - CRUD App with Authentication
 
-A complete **React.js** task management application with full CRUD operations (Create, Read, Update, Delete).
+A complete **React.js** task management application with full CRUD operations (Create, Read, Update, Delete), filtering, search, and **session-based authentication**.
 
 ## 📋 Features
+
+### 🔐 **Authentication**
+- **Session-based login** with email/password
+- User data stored in sessionStorage (persists during browser session)
+- **Automatic redirect** to login if session expires
+- **Logout functionality** to end session
+- **Demo account** for quick testing (demo@example.com / demo123)
+- Password validation (minimum 6 characters)
+- Email format validation
+- Show/hide password toggle
 
 ### ✅ Create Tasks
 - Add tasks with **Title**, **Description**, **Priority** (Low/Medium/High), and **Due Date**
@@ -28,13 +38,30 @@ A complete **React.js** task management application with full CRUD operations (C
 - Shows task title in confirmation
 - Permanently removes task from list
 
+### 🔍 **Search Functionality**
+- **Case-insensitive search** across task titles and descriptions
+- **300ms debouncing** to optimize performance
+- **Clear button** to reset search instantly
+- **Search hint** showing the current search term
+
+### 🎯 **Filtering Options**
+1. **All** - Shows all tasks
+2. **Completed** - Shows only completed tasks ✅
+3. **Pending** - Shows only pending tasks ⏳
+4. **High Priority** - Shows only high priority tasks 🔴
+5. **Medium Priority** - Shows only medium priority tasks 🟠
+6. **Low Priority** - Shows only low priority tasks 🟢
+
 ### ✅ Additional Features
 - **Toggle Complete/Pending** status with checkbox
 - **localStorage persistence** - tasks saved automatically
+- **sessionStorage** - user login persists during browser session
 - **Responsive design** - works on desktop, tablet, and mobile
 - **Emoji indicators** for better UX
 - **Smooth animations** and transitions
 - **Empty state message** when no tasks exist
+- **User profile display** with logout option
+- **Filter badges** showing task counts
 
 ## 🛠️ Installation & Setup
 
@@ -63,27 +90,64 @@ A complete **React.js** task management application with full CRUD operations (C
    - The app will typically run at `http://localhost:5173`
    - Copy the URL from terminal output and paste in your browser
 
+## 👤 Login Instructions
+
+### First Time Users
+1. Use the **demo account** button for quick access:
+   - Email: `demo@example.com`
+   - Password: `demo123`
+
+### Create Your Own Account
+1. Enter any valid email address (format: user@example.com)
+2. Enter a password (minimum 6 characters)
+3. Click **Login**
+4. Your account will be created and stored in sessionStorage
+
+### Important Notes
+- Accounts are **session-based** (persists while browser is open)
+- Closing the browser will clear the session
+- Refreshing the page keeps you logged in
+- All tasks are stored in localStorage (persists across sessions)
+
 ## 📁 Project Structure
 
 ```
 c:\Nelo\
 ├── src/
-│   ├── TaskManager.jsx           # Main component
-│   ├── TaskManager.css           # Styles
+│   ├── App.jsx                   # Main app with routing logic
+│   ├── Dashboard.jsx             # Task dashboard (after login)
+│   ├── TaskManager.jsx           # Old component (kept for reference)
+│   ├── TaskManager.css           # Dashboard & task styles
+│   ├── context/
+│   │   └── AuthContext.jsx       # Authentication context
 │   ├── components/
+│   │   ├── LoginPage.jsx         # Login form component
+│   │   ├── ProtectedRoute.jsx    # Route protection component
 │   │   ├── TaskForm.jsx          # Form for creating tasks
 │   │   ├── TaskList.jsx          # Display all tasks
+│   │   ├── FilterBar.jsx         # Filter buttons component
+│   │   ├── SearchBox.jsx         # Search input component
 │   │   ├── EditModal.jsx         # Modal for editing
 │   │   └── DeleteConfirmation.jsx # Delete confirmation dialog
+│   ├── styles/
+│   │   └── LoginPage.css         # Login page styles
 │   ├── main.jsx                  # React entry point
 │   └── index.css                 # Global styles
 ├── index.html                    # HTML template
 ├── vite.config.js                # Vite configuration
 ├── package.json                  # Dependencies
+├── tsconfig.json                 # TypeScript config
 └── README.md                     # This file
 ```
 
 ## 🎯 Usage Guide
+
+### Login Flow
+1. App loads and checks if user is already authenticated
+2. If not logged in, shows login page
+3. Enter email and password or use demo button
+4. After successful login, redirected to task dashboard
+5. Logout button visible in top-right corner
 
 ### Adding a Task
 1. Fill in the **Add New Task** form:
@@ -110,6 +174,22 @@ c:\Nelo\
 1. Click the **🗑️ Delete** button
 2. Confirm deletion in the popup dialog
 3. Task is permanently removed
+
+### Searching Tasks
+1. Type in the **search box** at the top
+2. Search works across task titles and descriptions
+3. Search is **case-insensitive**
+4. Results update automatically with 300ms debounce
+5. Click **✕** to clear search
+
+### Filtering Tasks
+- Click any filter button to view:
+  - **All** tasks
+  - **Completed** tasks only
+  - **Pending** tasks only
+  - Tasks by **priority level**
+- Task counts update dynamically
+- Can combine search with filters
 
 ### Form Validation
 - Required fields show **error messages** if empty
@@ -162,6 +242,17 @@ npm run build
 
 ## 🧪 Testing Checklist
 
+### Authentication
+- [ ] Login with demo account
+- [ ] Login with custom email/password
+- [ ] Try invalid email format (should show error)
+- [ ] Try password less than 6 characters (should show error)
+- [ ] Toggle password visibility
+- [ ] Logout and verify redirect to login
+- [ ] Refresh page and verify session persists
+- [ ] Close browser and reopen (session should clear)
+
+### Task Management
 - [ ] Add a task with all fields filled
 - [ ] Try adding a task without title (should show error)
 - [ ] Clear the form and verify it resets
@@ -170,40 +261,91 @@ npm run build
 - [ ] Mark a task as complete and verify visual change
 - [ ] Delete a task and confirm dialog appears
 - [ ] Cancel delete confirmation
-- [ ] Refresh browser and verify tasks persist
 - [ ] Add a task with past due date and verify "Overdue" badge
-- [ ] Test on mobile/tablet view
+- [ ] Refresh browser and verify tasks persist
+
+### Search & Filtering
+- [ ] Search by task title
+- [ ] Search by task description
+- [ ] Verify search is case-insensitive
+- [ ] Clear search and verify all tasks show
+- [ ] Filter by "Completed" tasks
+- [ ] Filter by "Pending" tasks
+- [ ] Filter by "High Priority"
+- [ ] Filter by "Medium Priority"
+- [ ] Filter by "Low Priority"
+- [ ] Verify filter counts are accurate
+- [ ] Combine search with filters
+
+### Responsive Design
+- [ ] Test on desktop (1920x1080)
+- [ ] Test on tablet (768x1024)
+- [ ] Test on mobile (375x667)
+- [ ] Verify forms are usable on all devices
+- [ ] Verify buttons are accessible on mobile
 
 ## 🤝 Technologies Used
 
-- **React 18** - UI library
+- **React 18** - UI library with hooks
+- **Context API** - State management and authentication
 - **Vite** - Build tool & dev server
-- **localStorage API** - Data persistence
+- **localStorage API** - Task persistence
+- **sessionStorage API** - Session-based authentication
 - **CSS3** - Styling with variables and animations
 - **ES6+** - Modern JavaScript
+
+## 🔐 Security Notes
+
+- **Session Storage**: User data is stored in browser's sessionStorage
+  - Data is cleared when browser tab closes
+  - Data is NOT sent to any server
+  - Use for demo/development purposes only
+
+- **Production Considerations**:
+  - Implement proper backend authentication
+  - Use JWT tokens with httpOnly cookies
+  - Add password hashing
+  - Implement refresh tokens
+  - Add HTTPS enforcement
+  - Add CORS protection
 
 ## 📝 Notes
 
 - Tasks are stored in browser's localStorage
-- No backend server required
-- Clear browser data to reset all tasks
+- User sessions are stored in sessionStorage
+- No backend server required for demo
 - Each browser/device has its own task storage
+- Each session has its own user context
 - Export/import functionality can be added as an enhancement
 
 ## 🐛 Troubleshooting
+
+### Can't login
+- Check if email format is valid (user@example.com)
+- Check if password is at least 6 characters
+- Try using demo account
 
 ### Tasks not persisting
 - Check if localStorage is enabled in browser
 - Clear browser cache and reload
 
+### Can't see logout button
+- Make sure you're logged in
+- Check if browser window is wide enough
+
 ### Styles not loading
-- Ensure CSS file is in correct location
+- Ensure CSS files are in correct location
 - Rebuild with `npm run build`
 
 ### Dev server won't start
 - Delete `node_modules` folder
 - Run `npm install` again
 - Try `npm run dev`
+
+### Session cleared after refresh
+- This is expected behavior for sessionStorage
+- If tasks should persist, they are stored in localStorage
+- Login again to restore user session
 
 ---
 
