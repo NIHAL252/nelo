@@ -976,6 +976,166 @@ body {
 }
 
 /* ============================================================================
+   SESSION MANAGEMENT
+   ============================================================================ */
+
+.btn-session-info {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  height: 44px;
+}
+
+.btn-session-info:hover {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-session-info:active {
+  transform: scale(0.95);
+}
+
+.session-info-container {
+  margin-top: 1rem;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.session-info-card {
+  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+  border: 2px solid #667eea;
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md);
+}
+
+.session-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #667eea;
+}
+
+.session-header h3 {
+  color: #667eea;
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.session-status {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.session-details {
+  background: white;
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.session-detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.session-detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #667eea;
+  min-width: 140px;
+}
+
+.detail-value {
+  color: var(--color-text);
+  word-break: break-all;
+  text-align: right;
+  flex: 1;
+  margin-left: 1rem;
+}
+
+.session-id {
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  background: #f3f4f6;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.session-time-remaining {
+  background: #fffbeb;
+  padding: 0.75rem;
+  border-radius: 4px;
+}
+
+.time-display {
+  color: #d97706;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.session-storage-info {
+  background: #f0f9ff;
+  border-left: 4px solid #0284c7;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+.session-storage-info p {
+  margin: 0.5rem 0;
+  line-height: 1.6;
+}
+
+.session-storage-info strong {
+  color: #0284c7;
+}
+
+.session-note {
+  background: #fef3c7;
+  border-left: 4px solid #f59e0b;
+  padding: 0.75rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  color: #78350f;
+}
+
+.session-note strong {
+  color: #d97706;
+}
+
+/* ============================================================================
    UTILITY CLASSES
    ============================================================================ */
 

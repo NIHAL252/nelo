@@ -7,6 +7,7 @@ import DeleteConfirmation from './components/DeleteConfirmation';
 import FilterBar from './components/FilterBar';
 import SearchBox from './components/SearchBox';
 import AdvancedSearchBox from './components/AdvancedSearchBox';
+import SessionInfo from './components/SessionInfo';
 import { useAuth } from './context/AuthContext';
 import { useSearch, usePerformance, useElasticSearch } from './hooks';
 
@@ -18,7 +19,8 @@ const Dashboard = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [useAdvancedSearch, setUseAdvancedSearch] = useState(false);
   const [elasticResults, setElasticResults] = useState(null);
-  const { user, logout } = useAuth();
+  const [showSessionInfo, setShowSessionInfo] = useState(false);
+  const { user, logout, getSessionInfo } = useAuth();
 
   // Use custom search hook with debouncing and filtering
   const {
@@ -136,12 +138,22 @@ const Dashboard = () => {
           <h1>📋 Task Manager</h1>
           <div className="header-user">
             <span className="user-info">👤 {user?.name}</span>
+            <button 
+              className="btn-session-info" 
+              onClick={() => setShowSessionInfo(!showSessionInfo)}
+              title="Session Information"
+            >
+              ⏱️
+            </button>
             <button className="btn-logout" onClick={logout} title="Logout">
               🚪 Logout
             </button>
           </div>
         </div>
         <p className="task-count">{filteredTasks.length} of {tasks.length} task(s)</p>
+        {showSessionInfo && (
+          <SessionInfo sessionInfo={getSessionInfo()} />
+        )}
       </div>
 
       <div className="task-manager-content">

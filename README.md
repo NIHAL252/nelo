@@ -1,14 +1,21 @@
 # Task Manager - CRUD App with Authentication
 
-A complete **React.js** task management application with full CRUD operations (Create, Read, Update, Delete), filtering, search, and **session-based authentication**.
+A complete **React.js** task management application with full CRUD operations (Create, Read, Update, Delete), filtering, search, and **JWT-simulated session-based authentication**.
 
 ## 📋 Features
 
-### 🔐 **Authentication**
+### 🔐 **Authentication & Session Management**
 - **Session-based login** with email/password
-- User data stored in sessionStorage (persists during browser session)
+- **JWT-simulated token** generation and validation
+- User data stored in **sessionStorage** (persists during browser session only)
+- Session persists across page refreshes in same tab
+- **Automatic logout** when tab closes or session expires
+- **24-hour session expiration** with real-time countdown
+- Unique **session IDs** for each login
+- **Session information display** with login/expiry times
+- **Automatic session validation** every 30 seconds
 - **Automatic redirect** to login if session expires
-- **Logout functionality** to end session
+- **Logout functionality** to end session immediately
 - **Demo account** for quick testing (demo@example.com / demo123)
 - Password validation (minimum 6 characters)
 - Email format validation
@@ -38,11 +45,25 @@ A complete **React.js** task management application with full CRUD operations (C
 - Shows task title in confirmation
 - Permanently removes task from list
 
-### 🔍 **Search Functionality**
-- **Case-insensitive search** across task titles and descriptions
-- **300ms debouncing** to optimize performance
-- **Clear button** to reset search instantly
-- **Search hint** showing the current search term
+## 🔍 **Advanced Search - Elasticsearch Style**
+- **Elasticsearch-style workflow**: Input → Debounce → Filter → Rank → Render
+- **Multiple matching algorithms**:
+  - Substring: Search term appears anywhere in text
+  - Fuzzy: Typo-tolerant matching with scoring
+  - Word: Whole word matching only
+  - Prefix: Text starts with search term
+  - Exact: Full text equality
+- **Case-insensitive search** across all fields
+- **Multi-field search** across title and description
+- **Multi-token search** (all tokens must match - AND logic)
+- **Result ranking** by relevance score
+- **Auto-suggestions** based on current input
+- **Search history** (last 10 searches)
+- **Performance metrics** display
+  - Result count
+  - Search execution time
+  - Number of terms used
+- **Toggle between Basic and Advanced search modes**
 
 ### 🎯 **Filtering Options**
 1. **All** - Shows all tasks
@@ -55,13 +76,15 @@ A complete **React.js** task management application with full CRUD operations (C
 ### ✅ Additional Features
 - **Toggle Complete/Pending** status with checkbox
 - **localStorage persistence** - tasks saved automatically
-- **sessionStorage** - user login persists during browser session
+- **sessionStorage** - user login persists during browser session only
 - **Responsive design** - works on desktop, tablet, and mobile
 - **Emoji indicators** for better UX
 - **Smooth animations** and transitions
 - **Empty state message** when no tasks exist
 - **User profile display** with logout option
 - **Filter badges** showing task counts
+- **Session info button** for viewing session details
+- **Auto-logout on expiry** with optional warning
 
 ## 🛠️ Installation & Setup
 
@@ -176,11 +199,30 @@ c:\Nelo\
 3. Task is permanently removed
 
 ### Searching Tasks
-1. Type in the **search box** at the top
-2. Search works across task titles and descriptions
-3. Search is **case-insensitive**
-4. Results update automatically with 300ms debounce
+
+**Basic Search:**
+1. Type in the **search box**
+2. Debounce waits 300ms after you stop typing
+3. Search filters across task titles and descriptions
+4. Results update automatically
 5. Click **✕** to clear search
+
+**Advanced Search (Elasticsearch-style):**
+1. Toggle **"Advanced Search"** checkbox
+2. Type search terms
+3. Get suggestions as you type
+4. Click suggestions to select them
+5. View search statistics (results, time, terms)
+6. Previous searches appear in history
+7. Switch back to Basic search anytime
+
+**Search Features:**
+- **Case-insensitive** - "TASK" finds "task" and "Task"
+- **Partial matching** - "mark" finds "Marketing" and "Bookmark"
+- **Multi-token search** - "urgent task" finds items with both words
+- **Fuzzy matching** - Typo tolerance for misspellings
+- **Auto-suggestions** - Suggestions based on matching content
+- **Search history** - Quick access to recent searches
 
 ### Filtering Tasks
 - Click any filter button to view:
